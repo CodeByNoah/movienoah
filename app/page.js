@@ -1,3 +1,7 @@
 export default function Home() {
-  return <div className="flex bg-red-500 text-cyan-400">فونت ایران سنس </div>;
+  return (
+    <div className="">
+      <div className="btn"> سلام </div>
+    </div>
+  );
 }

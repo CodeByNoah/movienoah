@@ -1,11 +1,19 @@
-@import url('./fontiran.css');
+@import url("./fontiran.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
-    html{
-        font-family: IRANSans , sens-serif;
-    }
+  html {
+    font-family: IRANSans, sens-serif;
+  }
+  body {
+    color: #e1e1e1;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply text-lg bg-accent-color-900 hover:bg-accent-color-500 cursor-pointer rounded-md border-none px-6 py-1 font-bold text-black transition-all duration-200 ease-in-out;
+  }
 }
