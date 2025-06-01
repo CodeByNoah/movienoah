@@ -1,9 +1,11 @@
 import React from "react";
 import { Search } from "lucide-react";
 
-function SearchInput() {
+function SearchInput({ className = "" }) {
   return (
-    <div className="relative flex items-center justify-between gap-[.125rem]">
+    <div
+      className={`relative flex items-center justify-between gap-[.125rem] ${className}`}
+    >
       <input
         type="text"
         placeholder="سرچ"

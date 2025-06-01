@@ -6,8 +6,9 @@ export default function RootLayout({ children }) {
     <html lang="en" dir="rtl">
       <body className="grid grid-cols-[20rem_1fr]">
         <Sidebar />
-
-        {children}
+        <main className="h-screen overflow-y-auto bg-main-background px-14 py-12">
+          {children}
+        </main>
       </body>
     </html>
   );

@@ -1,25 +1,41 @@
+"use client";
 import React from "react";
 import SearchInput from "@/components/SearchInput";
 import { Ellipsis, History, House } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function Sidebar() {
+  const router = useRouter();
+
   return (
     <div className="h flex h-screen flex-col overflow-y-hidden bg-black py-[1.875rem] pl-[2.75rem] pr-[1.25rem]">
-      <h1 className="text-accent-color-900 mb-5 text-2xl font-bold">
+      <h1 className="mb-5 text-2xl font-bold text-accent-color-900">
         تماشا خانه
       </h1>
       <SearchInput />
       <ul className="mt-10 flex flex-col gap-5">
-        <li className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background">
+        <li
+          onClick={() => router.push("/")}
+          className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background"
+        >
           <House />
           <a href="">خانه</a>
         </li>
-        <li className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background">
+        <li
+          className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background"
+          onClick={() => router.push("/history")}
+        >
           <History />
           <a href="">تاریخ</a>
         </li>
       </ul>
-      <button className="btn mt mt-8"> ساخت لیست تماشا</button>
+      <button
+        onClick={() => router.push("/createwatchlist")}
+        className="btn mt mt-8"
+      >
+        {" "}
+        ساخت لیست تماشا
+      </button>
 
       <ul className="mt-5 border-t border-t-[rgba(217,217,217,0.3)] text-secondary-text">
         <h2 className="my-5 text-lg">لیست‌های من </h2>
