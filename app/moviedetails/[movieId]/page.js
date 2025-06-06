@@ -1,47 +1,90 @@
+"use client";
 import React from "react";
 import ScoreSquere from "@/components/ScoreSquare";
+
 import Image from "next/image";
 import Cast from "@/components/Cast";
+import { fetchDirectorAndCasts, fetchMoviesDetails } from "@/api/api";
+import { useQuery } from "@tanstack/react-query";
+import translator from "@/api/translateApi";
+import MovieCard from "@/components/MovieCard";
+import { getImagePath } from "@/utils/dataHelper";
 
-function Page() {
+function Page({ params }) {
+  const { movieId } = React.use(params);
+  const {
+    data: moviedata,
+    isLoading: moviedataLoading,
+    error: movieError,
+  } = useQuery({
+    queryKey: ["movieDetails", movieId],
+    queryFn: () => fetchMoviesDetails(movieId),
+  });
+  const {
+    data: translatedOverview,
+    isLoading: translating,
+    error: translateError,
+  } = useQuery({
+    queryKey: ["translateOverview", moviedata?.overview ?? ""],
+    queryFn: () => translator(moviedata.overview),
+    enabled: Boolean(moviedata?.overview),
+  });
+
+  const {
+    data: casts,
+    error: castsError,
+    isLoading: castsLoading,
+  } = useQuery({
+    queryKey: ["casts", movieId],
+    queryFn: () => fetchDirectorAndCasts(movieId, "casts"),
+  });
+
+  if (moviedataLoading || castsLoading || translating) {
+    return <div>Loading...</div>;
+  }
+
+  const { poster_path, title, runtime, vote_average, overview, genres } =
+    moviedata;
+
   return (
     <>
       <div className="flex items-center justify-start gap-11">
         <Image
           className="moviedetails-img w-1/4 rounded-s"
-          src="https://image.tmdb.org/t/p/w300/6RDXvT0C9Mvm5FNHGThn4iP8xKH.jpg"
+          src={
+            poster_path
+              ? getImagePath(poster_path)
+              : "https://image.tmdb.org/t/p/w300/6RDXvT0C9Mvm5FNHGThn4iP8xKH.jpg"
+          }
           alt=""
           width={300}
           height={0}
         />
         <div className="flex flex-col">
-          <h2 className="text-3xl font-bold">Black swan</h2>
+          <h2 className="text-3xl font-bold">{title}</h2>
           <div className="mb-12 flex gap-5">
             <p className="">
-              {/*{moviedata.genres.map((genre, index) => (*/}
-              <span className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900">
-                action, thrier, drama {/*{genre.name}*/}
-                {/*{index !== moviedata.genres.length - 1 ? ", " : ""}*/}
-              </span>
+              {moviedata.genres.map((genre, index) => (
+                <span className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900">
+                  {genre.name}
+                  {index !== moviedata.genres.length - 1 ? ", " : ""}
+                </span>
+              ))}
             </p>
             <p className="moviedetails-info-duration">
-              2h 38m {/*{`${(runtime / 60).toFixed(0)}h ${runtime % 60}m`}*/}
+              {`${(runtime / 60).toFixed(0)}h ${runtime % 60}m`}
             </p>
           </div>
           <p className="mb-12 w-2/3 text-lg font-bold">
-            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
-            استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در
-            ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز،
-            و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای
-            زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و
-            متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان
-            رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد
+            {translating
+              ? "در حال بارگذاری ... "
+              : translatedOverview || "خطا در ترجمه"}
           </p>
           <div>
             <div className="flex items-center gap-24">
               <ScoreSquere
                 title={"Score"}
-                // description={vote_average.toFixed(1)}
+                description={vote_average.toFixed(1)}
               />
               <button
                 className="btn px-7 py-4"
@@ -63,10 +106,9 @@ function Page() {
       </div>
       <p className="mb-2.5 mt-12 text-lg font-bold"> بازیگران</p>
       <div className="grid grid-cols-6 gap-14 gap-y-14">
-        <Cast />
-        <Cast />
-        <Cast />
-        <Cast />
+        {casts.map((cast, index) => (
+          <Cast cast={cast} key={index} />
+        ))}
       </div>
     </>
   );

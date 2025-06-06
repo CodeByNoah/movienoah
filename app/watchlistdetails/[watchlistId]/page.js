@@ -1,9 +1,41 @@
+"use client";
 import React from "react";
 import ScoreSquere from "@/components/ScoreSquare";
 import MovieCard from "@/components/MovieCard";
 import { FilePenLine } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { getInfo } from "@/api/apiWatchlist";
 
-function Page() {
+function Page({ params }) {
+  const { watchlistId } = React.use(params);
+  console.log(watchlistId);
+
+  const averageScore = useSelector(
+    (state) => state.watchlistStore.averageScore,
+  );
+  const unWatchTime = useSelector(
+    (state) => state.watchlistStore.unwatchedRuntime,
+  );
+
+  const {
+    data: watchlistData,
+    isLoading: watchlistMoviesLoading,
+    error: watchlistMoviesError,
+  } = useQuery({
+    queryKey: ["getwatchlist", watchlistId],
+    queryFn: () => getInfo(watchlistId),
+  });
+
+  if (watchlistMoviesLoading) return <div>...loading</div>;
+  if (watchlistMoviesError) {
+    return (
+      <div>
+        something wrong in fetching movies from watchlist{" "}
+        {watchlistMoviesError.message}
+      </div>
+    );
+  }
   return (
     <>
       <div className="mb-6 flex items-center gap-7">
@@ -25,34 +57,29 @@ function Page() {
       <div className="mb-16 flex items-center gap-8">
         <ScoreSquere
           title={"ITEMS ON LIST"}
-          // description={watchlistData?.movies?.length || 0}
-          description="1"
+          description={watchlistData?.movies?.length || 0}
         />
         <ScoreSquere
           title={"UNWATCHED RUTIME"}
-          // description={`${(unWatchTime / 60).toFixed(0)}h ${(unWatchTime % 60).toFixed(0)}m`}
-          description="2h 19m"
+          description={`${(unWatchTime / 60).toFixed(0)}h ${(unWatchTime % 60).toFixed(0)}m`}
+          // description="2h 19m"
         />
-        <ScoreSquere
-          title={"AVERAGE SCORE"}
-          // description={averageScore}
-        />
+        <ScoreSquere title={"AVERAGE SCORE"} description={averageScore} />
       </div>
-      {/*{watchlistData.movies ? (*/}
-      {/*  <div className="moviecards">*/}
-      {/*    {watchlistData.movies.map((movieId, index) => (*/}
-      {/*      <MovieCard movieId={movieId} key={index} type={"showWatchlist"} />*/}
-      {/*    ))}*/}
-      {/*  </div>*/}
-      <div className="grid grid-cols-5 gap-14 gap-y-14">
-        <MovieCard type={"showWatchlist"} />
-        <MovieCard type={"showWatchlist"} />
-        <MovieCard type={"showWatchlist"} />
-        <MovieCard type={"showWatchlist"} />
-        <MovieCard type={"showWatchlist"} />
-      </div>
-      {/*) : (<div>No movies found in this watchlist.</div>*/}
-      {/*)}*/}
+      {watchlistData.movies ? (
+        <div className="grid grid-cols-5 gap-14 gap-y-14">
+          {watchlistData.movies.map((movieId, index) => (
+            <MovieCard
+              movieId={movieId}
+              key={index}
+              type={"showWatchlist"}
+              watchlistId={watchlistId}
+            />
+          ))}
+        </div>
+      ) : (
+        <div>No movies found in this watchlist.</div>
+      )}
     </>
   );
 }
