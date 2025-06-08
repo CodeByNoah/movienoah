@@ -4,14 +4,19 @@ import ScoreSquere from "@/components/ScoreSquare";
 
 import Image from "next/image";
 import Cast from "@/components/Cast";
-import { fetchDirectorAndCasts, fetchMoviesDetails } from "@/api/api";
+import { fetchDirectorAndCasts, fetchMoviesDetails } from "@/api/apiThemoviedb";
 import { useQuery } from "@tanstack/react-query";
 import translator from "@/api/translateApi";
 import MovieCard from "@/components/MovieCard";
 import { getImagePath } from "@/utils/dataHelper";
+import { useDispatch } from "react-redux";
+import { addToHistory } from "@/redux/slices/historySlice";
 
 function Page({ params }) {
   const { movieId } = React.use(params);
+
+  const dispatch = useDispatch();
+  dispatch(addToHistory(movieId));
   const {
     data: moviedata,
     isLoading: moviedataLoading,

@@ -2,7 +2,7 @@
 import React from "react";
 import MovieCard from "@/components/MovieCard";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMovieByName } from "@/api/api";
+import { fetchMovieByName } from "@/api/apiThemoviedb";
 
 function Page({ params }) {
   const { movieName } = React.use(params);

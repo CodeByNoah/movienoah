@@ -137,3 +137,15 @@ export async function deleteWatchlistapi({ watchlistId }) {
 
   return data;
 }
+
+export async function getUserWatchlistsApi(userId) {
+  const { data: watchlist, error } = await supabase
+    .from("watchlists")
+    .select("*")
+    .eq("user_id", userId);
+  if (error) {
+    console.error("Error fetching watchlists...", error);
+  } else {
+    return watchlist;
+  }
+}

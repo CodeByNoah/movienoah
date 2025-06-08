@@ -6,8 +6,10 @@ import { FilePenLine } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { getInfo } from "@/api/apiWatchlist";
+import { useParams, useRouter } from "next/navigation";
 
 function Page({ params }) {
+  const router = useRouter();
   const { watchlistId } = React.use(params);
   console.log(watchlistId);
 
@@ -39,21 +41,18 @@ function Page({ params }) {
   return (
     <>
       <div className="mb-6 flex items-center gap-7">
-        <h2 className="text-3xl font-bold">
-          {/*{watchlistData.name}*/}
-          روانشناسی
-        </h2>
+        <h2 className="text-3xl font-bold">{watchlistData.name}</h2>
         {/*<FiEdit*/}
         {/*  className="watchlisttitle-icon"*/}
         {/*  onClick={() => navigate(`/watchlistedit/${watchlistId}`)}*/}
         {/*/>*/}
-        <FilePenLine className="cursor-pointer transition duration-200 hover:text-accent-color-900" />
+        <FilePenLine
+          className="cursor-pointer transition duration-200 hover:text-accent-color-900"
+          onClick={() => router.push(`/watchlistedit/${watchlistId}`)}
+        />
       </div>
       <h4 className="mt-2.5 text-lg font-bold">درباره‌ی این لیست تماشا</h4>
-      <p className="mb-16">
-        {/*{watchlistData.description}*/}
-        لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ
-      </p>
+      <p className="mb-16">{watchlistData.description}</p>
       <div className="mb-16 flex items-center gap-8">
         <ScoreSquere
           title={"ITEMS ON LIST"}

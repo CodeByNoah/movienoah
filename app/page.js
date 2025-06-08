@@ -2,7 +2,7 @@
 import SearchInput from "@/components/SearchInput";
 import MovieCard from "@/components/MovieCard";
 import AddMovieModal from "@/components/AddMovieModal";
-import { fetchPopularMovies } from "@/api/api";
+import { fetchPopularMovies } from "@/api/apiThemoviedb";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
