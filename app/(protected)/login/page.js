@@ -1,7 +1,29 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/_lib/supabaseClient";
 
 function Page() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const router = useRouter();
+
+  async function handlerLogin(e) {
+    e.preventDefault();
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    console.log("Login success", data);
+    router.push("/");
+  }
   return (
     <div className="flex flex-col gap-24">
       <p className="w-1/3 text-xl font-light">
@@ -12,7 +34,7 @@ function Page() {
 
       <form
         className="m-auto mt-20 flex h-1/4 w-1/4 flex-col rounded-xl bg-card-background p-8"
-        // onSubmit={handlerLogin}
+        onSubmit={handlerLogin}
       >
         <label className="mb-2 text-lg font-bold" htmlFor="email">
           ایمیل
@@ -22,8 +44,8 @@ function Page() {
           type="email"
           placeholder="Enter your email"
           id="email"
-          // value={email}
-          // onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <label className="mb-2 text-lg font-bold" htmlFor="password">
           رمز ورود
@@ -33,8 +55,8 @@ function Page() {
           type="password"
           placeholder="Enter your Password"
           id="password"
-          // value={password}
-          // onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <button
           className="btn m-auto mt-7 w-2/3"
@@ -51,7 +73,7 @@ function Page() {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              // navigate("/profilesignin");
+              router.push("/signin");
             }}
           >
             ساخت اکانت
