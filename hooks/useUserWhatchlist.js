@@ -5,6 +5,7 @@ export default function useUserWhatchlist(userId) {
   const { data: watchlists, error } = useQuery({
     queryFn: () => getUserWatchlistsApi(userId),
     queryKey: ["userWatchlist"],
+    enabled: !!userId,
   });
 
   return { watchlists, error };

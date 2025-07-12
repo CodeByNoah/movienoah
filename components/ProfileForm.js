@@ -1,10 +1,62 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Camera } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/_lib/supabaseClient";
+import { useDispatch, useSelector } from "react-redux";
+import userSlice, { addToUser } from "@/redux/slices/userSlice";
+import useAddToWatchlist from "@/hooks/useAddTowatchlist";
+import useAddProfile from "@/hooks/useAddProfile";
 
 function ProfileForm({ type }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  const preName = useSelector((state) => state.userStore.user.name);
+  const preEmail = useSelector((state) => state.userStore.user.email);
+
+  const { addToProfiles } = useAddProfile();
+
+  const handlerSubmit = async (e) => {
+    e.preventDefault();
+
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
+      {
+        email,
+        password,
+      },
+    );
+
+    if (signUpError) {
+      alert(signUpError.message);
+      return;
+    }
+    if (signUpData) {
+      addToProfiles({
+        userId: signUpData.user.id,
+        name,
+        profile_picture: undefined,
+      });
+
+      dispatch(addToUser(signUpData.user.id));
+      console.log(signUpData.user.id);
+
+      router.push("/login");
+    }
+    console.log(signUpData);
+  };
+
   return (
     <div>
-      <form className="m-auto mt-20 flex h-1/4 w-1/4 flex-col rounded-xl bg-card-background p-8">
+      <form
+        onSubmit={handlerSubmit}
+        className="m-auto mt-20 flex h-1/4 w-1/4 flex-col rounded-xl bg-card-background p-8"
+      >
         <img
           className="m-auto w-1/3 rounded-full"
           src={
@@ -36,23 +88,23 @@ function ProfileForm({ type }) {
           نام
         </label>
         <input
-          // value={name}
+          value={name}
           className="mb-5 rounded-md border border-primary-text bg-transparent px-2.5 py-3 text-primary-text"
           type="text"
-          placeholder="نام خود را وارد کنید"
+          placeholder={preName ? preName : `نام خود را وارد کنید‍`}
           id="name"
-          // onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />{" "}
         <label className="mb-2 text-lg font-bold" htmlFor="email">
           ایمیل
         </label>
         <input
-          // value={email}
+          value={email}
           className="mb-5 rounded-md border border-primary-text bg-transparent px-2.5 py-3 text-primary-text"
           type="email"
-          placeholder="ایمبل خود را وارد کنید "
+          placeholder={preEmail ? preEmail : `ایمیل خود را وارد کنید‍`}
           id="email"
-          // onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />{" "}
         <label className="mb-2 text-lg font-bold" htmlFor="password">
           رمز ورود
@@ -62,15 +114,14 @@ function ProfileForm({ type }) {
           type="password"
           placeholder="رمز ورود خود را وارد کنید "
           id="password"
-          // onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <button
           className="btn gen-form-button m-auto mt-5 w-2/3"
           type="submit"
           // onClick={handlerSubmit}
         >
-          {/*{type === "signin" ? "Create Profile" : "Update Profile"}*/}
-          ثبت نام
+          {type === "signin" ? "ثبت نام" : "ویرایش"}
         </button>
       </form>
     </div>
