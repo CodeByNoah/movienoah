@@ -9,13 +9,19 @@ function Page() {
   const selector = useSelector((state) => state.historyStore.movies);
   return (
     <div>
-      <p
-        onClick={() => dispatch(resetHistory())}
-        className="mb-10 cursor-pointer text-left text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
-      >
-        {" "}
-        پاک کردن تاریخچه
-      </p>
+      {selector.length > 0 ? (
+        <p
+          onClick={() => dispatch(resetHistory())}
+          className="mb-10 cursor-pointer text-left text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
+        >
+          {" "}
+          پاک کردن تاریخچه
+        </p>
+      ) : (
+        <p className="text-center text-xl text-gray-500">
+          تاریخچه‌ای وجود ندارد
+        </p>
+      )}
       <div className="grid grid-cols-5 gap-14 gap-y-14">
         {selector.map((movie, index) => (
           <MovieCard movieId={movie} key={index} />

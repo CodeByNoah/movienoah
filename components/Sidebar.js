@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SearchInput from "@/components/SearchInput";
 import { Ellipsis, History, House } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,13 +8,11 @@ import useUserWhatchlist from "@/hooks/useUserWhatchlist";
 import { infoReset } from "@/redux/slices/watchlistSlice";
 import { supabase } from "@/_lib/supabaseClient";
 import {
-  addToUser,
   addToUserEmail,
   addToUserId,
   addToUserName,
 } from "@/redux/slices/userSlice";
 import { useQuery } from "@tanstack/react-query";
-import { getUserWatchlistsApi } from "@/api/apiWatchlist";
 import { getUserName } from "@/api/apiUser";
 
 function Sidebar() {
@@ -40,19 +38,25 @@ function Sidebar() {
 
   const { data: name, NameError } = useQuery({
     queryFn: () => getUserName(userId),
-    queryKey: ["userName"],
+    queryKey: ["userName", userId],
     enabled: !!userId,
   });
 
-  if (error) return error;
+  useEffect(() => {
+    if (name) {
+      dispatch(addToUserName(name));
+    }
+  }, [name, dispatch]);
 
-  if (NameError) return NameError;
+  if (NameError || error) {
+    return (
+      <div className="text-sm text-red-500">
+        خطایی در بارگذاری اطلاعات کاربر یا لیست‌ها رخ داده است.
+      </div>
+    );
+  }
 
-  dispatch(addToUserName(name));
-
-  function handlerNvigate(watchlistId) {
-    event.preventDefault();
-
+  function handlerNavigate(watchlistId) {
     dispatch(infoReset());
     console.log(watchlists);
 
@@ -74,14 +78,14 @@ function Sidebar() {
           className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background"
         >
           <House />
-          <a href="">خانه</a>
+          <span>خانه</span>
         </li>
         <li
           className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background"
           onClick={() => router.push("/history")}
         >
           <History />
-          <a href="">تاریخ</a>
+          <span>تاریخ</span>
         </li>
       </ul>
       <button
@@ -98,7 +102,7 @@ function Sidebar() {
           ? watchlists.map((watchlist) => (
               <li
                 key={watchlist.id}
-                onClick={() => handlerNvigate(watchlist.id)}
+                onClick={() => handlerNavigate(watchlist.id)}
                 className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background"
               >
                 {watchlist.name}
