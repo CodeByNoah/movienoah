@@ -70,7 +70,10 @@ function Page({ params }) {
           <div className="mb-12 flex gap-5">
             <p className="">
               {moviedata.genres.map((genre, index) => (
-                <span className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900">
+                <span
+                  key={index}
+                  className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900"
+                >
                   {genre.name}
                   {index !== moviedata.genres.length - 1 ? ", " : ""}
                 </span>

@@ -38,13 +38,13 @@ function Sidebar() {
 
   const { watchlists, error } = useUserWhatchlist(userId);
 
-  if (error) return error;
-
   const { data: name, NameError } = useQuery({
     queryFn: () => getUserName(userId),
     queryKey: ["userName"],
     enabled: !!userId,
   });
+
+  if (error) return error;
 
   if (NameError) return NameError;
 
@@ -97,6 +97,7 @@ function Sidebar() {
         {watchlists
           ? watchlists.map((watchlist) => (
               <li
+                key={watchlist.id}
                 onClick={() => handlerNvigate(watchlist.id)}
                 className="flex cursor-pointer items-center justify-start gap-2 rounded-md px-3 py-2.5 transition duration-150 hover:bg-card-background"
               >

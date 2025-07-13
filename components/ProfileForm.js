@@ -5,9 +5,9 @@ import { Camera } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/_lib/supabaseClient";
 import { useDispatch, useSelector } from "react-redux";
-import userSlice, { addToUser } from "@/redux/slices/userSlice";
 import useAddToWatchlist from "@/hooks/useAddTowatchlist";
 import useAddProfile from "@/hooks/useAddProfile";
+import { addToUserId } from "@/redux/slices/userSlice";
 
 function ProfileForm({ type }) {
   const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ function ProfileForm({ type }) {
         profile_picture: undefined,
       });
 
-      dispatch(addToUser(signUpData.user.id));
+      dispatch(addToUserId(signUpData.user.id));
       console.log(signUpData.user.id);
 
       router.push("/login");
