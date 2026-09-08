@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Camera } from "lucide-react";
+import { Camera, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/_lib/supabaseClient";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,14 +57,9 @@ function ProfileForm({ type }) {
         onSubmit={handlerSubmit}
         className="m-auto mt-20 flex h-1/4 w-1/4 flex-col rounded-xl bg-card-background p-8"
       >
-        <img
-          className="m-auto w-1/3 rounded-full"
-          src={
-            // (profileData && profileData.profile_picture) ||
-            "https://ykhxkcfzqggpcaciqnen.supabase.co/storage/v1/object/public/userfiles/avatars/user.jpg"
-          }
-          alt=""
-        />
+        <div className="m-auto flex aspect-square w-1/3 items-center justify-center rounded-full bg-[#1a1a1a]">
+          <UserRound size={60} className="text-[rgba(217,217,217,0.7)]" />
+        </div>
         <div className="m-auto mt-2 flex items-center gap-2.5">
           <Camera />
           <input
@@ -81,38 +76,38 @@ function ProfileForm({ type }) {
             {/*{type === "signin" || !profileData.profile_picture*/}
             {/*  ? "Add an avatar"*/}
             {/*  : "Remove Avatar"}*/}
-            اضافه کردن آواتار
+            Add Avatar
           </button>
         </div>
         <label className="mb-2 text-lg font-bold" htmlFor="name">
-          نام
+          Name
         </label>
         <input
           value={name}
           className="mb-5 rounded-md border border-primary-text bg-transparent px-2.5 py-3 text-primary-text"
           type="text"
-          placeholder={preName ? preName : `نام خود را وارد کنید‍`}
+          placeholder={preName ? preName : `Enter your name`}
           id="name"
           onChange={(e) => setName(e.target.value)}
         />{" "}
         <label className="mb-2 text-lg font-bold" htmlFor="email">
-          ایمیل
+          Email
         </label>
         <input
           value={email}
           className="mb-5 rounded-md border border-primary-text bg-transparent px-2.5 py-3 text-primary-text"
           type="email"
-          placeholder={preEmail ? preEmail : `ایمیل خود را وارد کنید‍`}
+          placeholder={preEmail ? preEmail : `Enter your email`}
           id="email"
           onChange={(e) => setEmail(e.target.value)}
         />{" "}
         <label className="mb-2 text-lg font-bold" htmlFor="password">
-          رمز ورود
+          Password
         </label>
         <input
           className="mb-5 rounded-md border border-primary-text bg-transparent px-2.5 py-3 text-primary-text"
           type="password"
-          placeholder="رمز ورود خود را وارد کنید "
+          placeholder="Enter your password"
           id="password"
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -121,7 +116,7 @@ function ProfileForm({ type }) {
           type="submit"
           // onClick={handlerSubmit}
         >
-          {type === "signin" ? "ثبت نام" : "ویرایش"}
+          {type === "signin" ? "Sign Up" : "Update"}
         </button>
       </form>
     </div>

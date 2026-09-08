@@ -14,18 +14,17 @@ export default function Home() {
     <>
       <div className="mb-10 rounded-md border border-accent-color-900 p-5">
         <h2 className="mb-9 text-3xl">
-          به <span className="text-accent-color-900">تماشاخانه</span> خوش آمدید
+          Welcome to <span className="text-accent-color-900">MovieNoah</span>
         </h2>
         <p className="text-lg">
-          جستجوی فیلم‌ها، افزودن آن‌ها به فهرست تماشا و به‌اشتراک‌گذاری با
-          دوستان
+          Search movies, add them to watchlists, and share with friends.
         </p>
       </div>
       <div className="flex gap-2">
-        <SearchInput className={"grow"} />
-        <button className="btn">جستجو</button>
+        <SearchInput />
+        <button className="btn">Search</button>
       </div>
-      <h3 className="my-9 text-2xl"> فیلم‌های پربیننده این روزها</h3>
+      <h3 className="my-9 text-2xl">Popular Movies</h3>
 
       <div className="grid grid-cols-4 gap-14 gap-y-14">
         {popularMovies &&

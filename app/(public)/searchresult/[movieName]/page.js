@@ -28,7 +28,7 @@ function Page({ params }) {
   return (
     <>
       <h2 className="mb-12 text-2xl font-bold">
-        نتیجه سرچ:
+        Search results:
         {/*{movieName}*/}
       </h2>
 

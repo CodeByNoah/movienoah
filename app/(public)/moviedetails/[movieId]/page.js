@@ -6,7 +6,6 @@ import Image from "next/image";
 import Cast from "@/components/Cast";
 import { fetchDirectorAndCasts, fetchMoviesDetails } from "@/api/apiThemoviedb";
 import { useQuery } from "@tanstack/react-query";
-import translator from "@/api/translateApi";
 import MovieCard from "@/components/MovieCard";
 import { getImagePath } from "@/utils/dataHelper";
 import { useDispatch } from "react-redux";
@@ -25,15 +24,6 @@ function Page({ params }) {
     queryKey: ["movieDetails", movieId],
     queryFn: () => fetchMoviesDetails(movieId),
   });
-  const {
-    data: translatedOverview,
-    isLoading: translating,
-    error: translateError,
-  } = useQuery({
-    queryKey: ["translateOverview", moviedata?.overview ?? ""],
-    queryFn: () => translator(moviedata.overview),
-    enabled: Boolean(moviedata?.overview),
-  });
 
   const {
     data: casts,
@@ -44,7 +34,7 @@ function Page({ params }) {
     queryFn: () => fetchDirectorAndCasts(movieId, "casts"),
   });
 
-  if (moviedataLoading || castsLoading || translating) {
+  if (moviedataLoading || castsLoading) {
     return <div>Loading...</div>;
   }
 
@@ -84,9 +74,7 @@ function Page({ params }) {
             </p>
           </div>
           <p className="mb-12 w-2/3 text-lg font-bold">
-            {translating
-              ? "در حال بارگذاری ... "
-              : translatedOverview || "خطا در ترجمه"}
+            {overview}
           </p>
           <div>
             <div className="flex items-center gap-24">
@@ -112,7 +100,7 @@ function Page({ params }) {
         {/*  ></AddMovieModal>*/}
         {/*)}*/}
       </div>
-      <p className="mb-2.5 mt-12 text-lg font-bold"> بازیگران</p>
+      <p className="mb-2.5 mt-12 text-lg font-bold">Cast</p>
       <div className="grid grid-cols-6 gap-14 gap-y-14">
         {casts.map((cast, index) => (
           <Cast cast={cast} key={index} />

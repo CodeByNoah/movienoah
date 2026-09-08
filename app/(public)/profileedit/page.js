@@ -13,8 +13,8 @@ function Page() {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error("خطا در خروج:", error.message);
-      alert("خطا در خروج از حساب");
+        console.error("Logout error:", error.message);
+      alert("Error logging out");
     } else {
       dispatch(infoReset());
       router.push("/login");
@@ -23,12 +23,12 @@ function Page() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h2 className="mb-12 text-2xl font-bold">ویرایش پروفایل</h2>
+        <h2 className="mb-12 text-2xl font-bold">Edit Profile</h2>
         <p
           onClick={handleLogout}
           className="mb-10 cursor-pointer text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
         >
-          خروج
+          Log Out
         </p>
       </div>
 

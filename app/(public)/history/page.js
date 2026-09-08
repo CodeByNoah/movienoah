@@ -15,11 +15,11 @@ function Page() {
           className="mb-10 cursor-pointer text-left text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
         >
           {" "}
-          پاک کردن تاریخچه
+          Clear history
         </p>
       ) : (
         <p className="text-center text-xl text-gray-500">
-          تاریخچه‌ای وجود ندارد
+          No history found
         </p>
       )}
       <div className="grid grid-cols-5 gap-14 gap-y-14">

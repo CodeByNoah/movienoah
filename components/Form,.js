@@ -113,21 +113,21 @@ function Form({ type = "create" }) {
       <div className="flex justify-between">
         <h2 className="mb-12 text-2xl font-bold">
           {" "}
-          {type === "create" ? "ساختن لیست تماشا" : "ویرایش لیست تماشا"}
+          {type === "create" ? "Create Watchlist" : "Edit Watchlist"}
         </h2>
         {type !== "create" && (
           <p
             onClick={() => watchlistDelete({ watchlistId })}
             className="mb-10 cursor-pointer text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
           >
-            حذف لیست تماشا
+            Delete Watchlist
           </p>
         )}
       </div>
       <form className="flex flex-col" action="">
         <label className="mb-1 font-bold" htmlFor="name">
           {" "}
-          نام
+          Name
         </label>
         <input
           className="mb-8 h-11 rounded-md border bg-transparent px-2.5 py-1"
@@ -138,7 +138,7 @@ function Form({ type = "create" }) {
         />
         <label className="mb-1 font-bold" htmlFor="description">
           {" "}
-          توضیحات
+          Description
         </label>
         <textarea
           className="mb-8 h-40 resize-none rounded-md border bg-transparent px-2.5 py-1"
@@ -155,11 +155,11 @@ function Form({ type = "create" }) {
             onClick={handleSubmit}
           >
             {" "}
-            ساخت لیست تماشا
+            Create Watchlist
           </button>
         ) : (
           <>
-            <h4 className="mb-2.5 text-lg font-bold">فیلم‌ها</h4>
+            <h4 className="mb-2.5 text-lg font-bold">Movies</h4>
             <div>
               {watchlistData.movies ? (
                 watchlistData.movies.map((movie, index) => (
@@ -179,7 +179,7 @@ function Form({ type = "create" }) {
               type={"submit"}
               onClick={handleSubmit}
             >
-              ذخیره
+              Save
             </button>
           </>
         )}

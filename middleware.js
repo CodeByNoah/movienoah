@@ -18,13 +18,13 @@ export async function middleware(req) {
     url.pathname.startsWith("/api") ||
     url.pathname.startsWith("/_next");
 
-  // اگر کاربر وارد نشده و صفحه عمومی نیست، بفرستش به لاگین
+  // Redirect unauthenticated users to login
   if (!isPublic && !session) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // اگه کاربر وارد شده و داره میره لاگین یا ساین‌این، بفرستش صفحه اصلی
+  // Redirect authenticated users away from login and sign-in
   if (session && (url.pathname === "/login" || url.pathname === "/signin")) {
     url.pathname = "/";
     return NextResponse.redirect(url);

@@ -6,12 +6,12 @@ import Sidebar from "@/components/Sidebar";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" dir="rtl">
-      <body className="grid grid-cols-[20rem_1fr]">
+    <html lang="en" dir="ltr">
+      <body className="flex h-screen overflow-hidden text-primary-text">
         <ReduxProvider>
           <ReactQueryProvider>
             <Sidebar />
-            <main className="h-screen overflow-y-auto bg-main-background px-14 py-12">
+            <main className="flex-1 h-screen overflow-y-auto bg-main-background px-14 py-12">
               {children}
             </main>
           </ReactQueryProvider>

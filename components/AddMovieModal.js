@@ -34,13 +34,13 @@ function AddMovieModal({ movieId, setIsModalOpen, movieName }) {
         <div className="">
           <ul className="flex flex-col gap-4">
             <li className="flex items-center">
-              <span className="ml-5">اضافه کردن فیلم: </span>
+              <span className="ml-5">Add movie: </span>
               <span className="cursor-pointer text-lg font-bold text-accent-color-500 transition duration-150 hover:text-accent-color-900">
                 {movieName}
               </span>
             </li>
             <li className="addMovieModal-info-li">
-              <span className="ml-5">به لیست تماشا :</span>
+              <span className="ml-5">to watchlist:</span>
             </li>
           </ul>
         </div>
@@ -59,7 +59,7 @@ function AddMovieModal({ movieId, setIsModalOpen, movieName }) {
             onClick={() => router.push("/createwatchlist")}
           >
             {" "}
-            ساختن لیست جدید
+            Create New Watchlist
           </button>
         </div>
       </div>

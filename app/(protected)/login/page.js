@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/_lib/supabaseClient";
+import { AiFillLinkedin } from "react-icons/ai";
+import Link from "next/link";
 
 function Page() {
   const [email, setEmail] = useState("");
@@ -27,9 +29,8 @@ function Page() {
   return (
     <div className="flex flex-col gap-24">
       <p className="w-1/3 text-xl font-light">
-        سلام! <br />
-        لطفاً وارد حساب کاربری خود شوید یا یک حساب جدید ایجاد کنید تا بتوانید از
-        قابلیت‌های این برنامه استفاده کنید.
+        Hello! <br />
+        Please log in or create a new account to use this application.
       </p>
 
       <form
@@ -37,7 +38,7 @@ function Page() {
         onSubmit={handlerLogin}
       >
         <label className="mb-2 text-lg font-bold" htmlFor="email">
-          ایمیل
+          Email
         </label>
         <input
           className="mb-5 rounded-md border border-primary-text bg-transparent px-2.5 py-3.5 text-primary-text"
@@ -48,7 +49,7 @@ function Page() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <label className="mb-2 text-lg font-bold" htmlFor="password">
-          رمز ورود
+          Password
         </label>
         <input
           className="mb-5 rounded-md border border-primary-text bg-transparent px-2.5 py-4 text-primary-text"
@@ -64,20 +65,13 @@ function Page() {
           // disabled={isLogin}
         >
           {/*{isLogin ? "Logging in..." : "Log in"}*/}
-          ورود
+          Log In
         </button>
         <span className="m-auto mt-4">
           or{" "}
-          <a
-            className="text-accent-color-900 underline"
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              router.push("/signin");
-            }}
-          >
-            ساخت اکانت
-          </a>
+          <Link href="/signin" className="text-accent-color-900 underline">
+            Create Account
+          </Link>
         </span>
       </form>
     </div>

@@ -51,7 +51,7 @@ function Page({ params }) {
           onClick={() => router.push(`/watchlistedit/${watchlistId}`)}
         />
       </div>
-      <h4 className="mt-2.5 text-lg font-bold">درباره‌ی این لیست تماشا</h4>
+      <h4 className="mt-2.5 text-lg font-bold">About this watchlist</h4>
       <p className="mb-16">{watchlistData.description}</p>
       <div className="mb-16 flex items-center gap-8">
         <ScoreSquere

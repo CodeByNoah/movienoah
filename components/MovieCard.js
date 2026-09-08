@@ -93,13 +93,13 @@ function MovieCard({ type, movieId, watchlistId }) {
         >
           <ul className="flex flex-col gap-2.5">
             <li className="moviecard-info-li">
-              <span className="ml-0.5 font-bold">نام:</span>
+              <span className="ml-0.5 font-bold">Title:</span>
               <span className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900">
                 {movieData.title}
               </span>
             </li>{" "}
             <li className="ml-0.5">
-              <span className="ml-0.5 font-bold">ژانر:</span>{" "}
+              <span className="ml-0.5 font-bold">Genre:</span>{" "}
               {movieData.genres.map((genre, index) => (
                 <span
                   className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900"
@@ -112,7 +112,7 @@ function MovieCard({ type, movieId, watchlistId }) {
               ))}
             </li>
             <li className="moviecard-info-li">
-              <span className="ml-0.5 font-bold">کارگردان:</span>{" "}
+              <span className="ml-0.5 font-bold">Director:</span>{" "}
               <span className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900">
                 {directorname || "No Data"}
               </span>
@@ -130,7 +130,7 @@ function MovieCard({ type, movieId, watchlistId }) {
             className="btn mt-auto rounded-none rounded-b-sm px-2.5"
             onClick={() => setIsModalOpen(true)}
           >
-            اضافه به لیست تماشا
+            Add to Watchlist
           </button>
         )}
       </div>

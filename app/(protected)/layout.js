@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" dir="rtl">
+    <html lang="en" dir="ltr">
       <body className="grid">
         <ReduxProvider>
           <ReactQueryProvider>
