@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import WatchlistMovies from "@/components/WatchlistMovies";
+import Spinner from "@/components/Spinner";
 import {
   createWatchlistapi,
   deleteWatchlistapi,
@@ -30,18 +31,17 @@ function Form({ type = "create" }) {
     enabled: type === "edit" && Boolean(watchlistId),
   });
 
-  const { mutate: watchlistDelete, isLoading: isDeletingWatchlist } =
+  const { mutate: watchlistDelete, isPending: isDeletingWatchlist } =
     useMutation({
       mutationFn: ({ watchlistId }) => deleteWatchlistapi({ watchlistId }),
       onSuccess: () => {
-        console.log("watchlist is deleted");
         router.push("/");
         queryClient.invalidateQueries(["userWatchlist"]);
       },
       onError: (error) => console.log(error),
     });
 
-  const { mutate: createWatchlist, isLoading: createWatchlistLoading } =
+  const { mutate: createWatchlist, isPending: createWatchlistLoading } =
     useMutation({
       mutationFn: ({ name, description, userId }) =>
         createWatchlistapi({
@@ -52,11 +52,10 @@ function Form({ type = "create" }) {
       onSuccess: () => {
         queryClient.invalidateQueries(["userWatchlist"]);
       },
-
       onError: (error) => console.log(error),
     });
 
-  const { mutate: updateWatchlist, isLoading: updataWatchlistLoading } =
+  const { mutate: updateWatchlist, isPending: updataWatchlistLoading } =
     useMutation({
       mutationFn: ({ watchlistId, name, description, movies }) =>
         updateWatchlistapi(watchlistId, name, description, movies),
@@ -69,8 +68,8 @@ function Form({ type = "create" }) {
 
   useEffect(() => {
     if (watchlistData) {
-      setName(watchlistData.name);
-      setDescription(watchlistData.description);
+      setName(watchlistData.name || "");
+      setDescription(watchlistData.description || "");
     }
   }, [watchlistData]);
 
@@ -91,7 +90,7 @@ function Form({ type = "create" }) {
         (movie) =>
           !deletedMovies.some((deletedMovie) => deletedMovie.id === movie),
       );
-      await deletedMovies.forEach((deletedMovie) => {
+      deletedMovies.forEach((deletedMovie) => {
         dispatch(deleteMovieRx(deletedMovie));
       });
 
@@ -105,63 +104,72 @@ function Form({ type = "create" }) {
       router.push(`/watchlistdetails/${watchlistId}`);
     }
   }
-  if (!watchlistData && type === "edit") {
-    return <div>loading ... </div>;
+
+  if ((!watchlistData || isLoading) && type === "edit") {
+    return <Spinner size="xl" text="Loading watchlist details..." fullPage />;
   }
+
   return (
-    <>
-      <div className="flex justify-between">
-        <h2 className="mb-12 text-2xl font-bold">
-          {" "}
+    <div className="w-full max-w-2xl">
+      <div className="mb-6 sm:mb-8 flex items-center justify-between">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
           {type === "create" ? "Create Watchlist" : "Edit Watchlist"}
-        </h2>
+        </h1>
         {type !== "create" && (
-          <p
+          <button
+            type="button"
             onClick={() => watchlistDelete({ watchlistId })}
-            className="mb-10 cursor-pointer text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
+            disabled={isDeletingWatchlist}
+            className="inline-flex items-center gap-2 cursor-pointer text-sm sm:text-base font-semibold text-accent-color-900 underline transition duration-200 hover:text-accent-color-500 disabled:opacity-50"
           >
-            Delete Watchlist
-          </p>
+            {isDeletingWatchlist && <Spinner size="xs" color="current" inline />}
+            {isDeletingWatchlist ? "Deleting..." : "Delete Watchlist"}
+          </button>
         )}
       </div>
-      <form className="flex flex-col" action="">
-        <label className="mb-1 font-bold" htmlFor="name">
-          {" "}
+
+      <form onSubmit={handleSubmit} className="flex flex-col">
+        <label className="mb-1.5 text-sm sm:text-base font-bold text-primary-text" htmlFor="name">
           Name
         </label>
         <input
-          className="mb-8 h-11 rounded-md border bg-transparent px-2.5 py-1"
+          className="mb-6 h-11 w-full rounded-md border border-[rgba(217,217,217,0.3)] bg-transparent px-3 py-2 text-sm sm:text-base text-primary-text focus:border-accent-color-900 focus:outline-none transition-colors"
           type="text"
           id="name"
+          placeholder="e.g. Favorite Sci-Fi Movies"
           value={name}
+          required
           onChange={handleNameChange}
         />
-        <label className="mb-1 font-bold" htmlFor="description">
-          {" "}
+
+        <label className="mb-1.5 text-sm sm:text-base font-bold text-primary-text" htmlFor="description">
           Description
         </label>
         <textarea
-          className="mb-8 h-40 resize-none rounded-md border bg-transparent px-2.5 py-1"
-          // className="watchlistcreat-input desc--input"
-          type="text"
+          className="mb-6 h-36 w-full resize-none rounded-md border border-[rgba(217,217,217,0.3)] bg-transparent px-3 py-2 text-sm sm:text-base text-primary-text focus:border-accent-color-900 focus:outline-none transition-colors"
           id="description"
+          placeholder="Describe your watchlist..."
           value={description}
           onChange={handleDescriptionChange}
         />
+
         {type === "create" ? (
           <button
-            className="btn w-2/12 py-3"
-            type={"submit"}
-            onClick={handleSubmit}
+            className="btn w-full sm:w-auto sm:self-start px-8 py-3 text-sm sm:text-base shadow-lg disabled:opacity-50"
+            type="submit"
+            disabled={createWatchlistLoading}
           >
-            {" "}
-            Create Watchlist
+            {createWatchlistLoading ? (
+              <Spinner size="sm" color="current" inline text="Creating..." />
+            ) : (
+              "Create Watchlist"
+            )}
           </button>
         ) : (
           <>
-            <h4 className="mb-2.5 text-lg font-bold">Movies</h4>
-            <div>
-              {watchlistData.movies ? (
+            <h4 className="mb-3 text-base sm:text-lg font-bold">Movies in Watchlist</h4>
+            <div className="mb-6 space-y-2">
+              {watchlistData.movies && watchlistData.movies.length > 0 ? (
                 watchlistData.movies.map((movie, index) => (
                   <WatchlistMovies
                     key={index}
@@ -170,21 +178,27 @@ function Form({ type = "create" }) {
                   />
                 ))
               ) : (
-                <div>-this watchlist dont have any movie-</div>
+                <div className="text-sm text-secondary-text">
+                  This watchlist has no movies yet.
+                </div>
               )}
             </div>
 
             <button
-              className="btn w-2/12 py-3"
-              type={"submit"}
-              onClick={handleSubmit}
+              className="btn w-full sm:w-auto sm:self-start px-8 py-3 text-sm sm:text-base shadow-lg disabled:opacity-50"
+              type="submit"
+              disabled={updataWatchlistLoading}
             >
-              Save
+              {updataWatchlistLoading ? (
+                <Spinner size="sm" color="current" inline text="Saving..." />
+              ) : (
+                "Save Changes"
+              )}
             </button>
           </>
         )}
       </form>
-    </>
+    </div>
   );
 }
 

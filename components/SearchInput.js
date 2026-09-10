@@ -1,35 +1,49 @@
+"use client";
 import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-function SearchInput({ className = "" }) {
-  const [searchInput, setSearchInput] = useState();
+function SearchInput({ className = "", onSearchCallback }) {
+  const [searchInput, setSearchInput] = useState("");
   const router = useRouter();
-  function handelersearch() {
-    router.push(`searchresult/${searchInput}`);
-  }
-  function handleKeyPress(e) {
-    if (e.key === "Enter") {
-      handelersearch();
+
+  function handleSearch() {
+    const trimmed = searchInput ? searchInput.trim() : "";
+    if (trimmed) {
+      if (onSearchCallback) {
+        onSearchCallback();
+      }
+      router.push(`/searchresult/${encodeURIComponent(trimmed)}`);
     }
   }
+
+  function handleKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
+  }
+
   return (
     <div
-      className={`relative flex items-center justify-between gap-[.125rem] ${className}`}
+      className={`relative flex w-full items-center justify-between ${className}`}
     >
       <input
         type="text"
-        placeholder="Search"
-        className="h-9 w-full rounded-md border border-[rgba(217,217,217,0.3)] bg-transparent px-3 py-2 text-primary-text"
-        onChange={(e) => {
-          setSearchInput(e.target.value);
-        }}
-        onKeyPress={handleKeyPress}
+        placeholder="Search movies..."
+        value={searchInput}
+        className="h-10 w-full rounded-md border border-[rgba(217,217,217,0.3)] bg-transparent pl-3 pr-10 text-sm text-primary-text placeholder:text-secondary-text focus:border-accent-color-900 focus:outline-none transition-colors"
+        onChange={(e) => setSearchInput(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
-      <Search
-        size={23}
-        className="absolute right-2 cursor-pointer text-primary-text transition duration-150 hover:text-secondary-text"
-      />
+      <button
+        type="button"
+        onClick={handleSearch}
+        className="absolute right-1 flex h-8 w-8 items-center justify-center text-secondary-text hover:text-primary-text transition-colors"
+        aria-label="Submit search"
+      >
+        <Search size={18} />
+      </button>
     </div>
   );
 }

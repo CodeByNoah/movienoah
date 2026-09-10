@@ -13,23 +13,26 @@ function Page() {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-        console.error("Logout error:", error.message);
+      console.error("Logout error:", error.message);
       alert("Error logging out");
     } else {
       dispatch(infoReset());
       router.push("/login");
     }
   };
+
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <h2 className="mb-12 text-2xl font-bold">Edit Profile</h2>
-        <p
+    <div className="w-full">
+      <div className="mb-6 sm:mb-8 flex items-center justify-between">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+          Edit Profile
+        </h1>
+        <button
           onClick={handleLogout}
-          className="mb-10 cursor-pointer text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
+          className="cursor-pointer text-sm sm:text-base font-semibold text-accent-color-900 underline transition duration-200 hover:text-accent-color-500"
         >
           Log Out
-        </p>
+        </button>
       </div>
 
       <ProfileForm type="edit" />

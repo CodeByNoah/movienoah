@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaImdb } from "react-icons/fa";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Check, CircleX } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDirectorAndCasts, fetchMoviesDetails } from "@/api/apiThemoviedb";
@@ -47,93 +47,121 @@ function MovieCard({ type, movieId, watchlistId }) {
   }, [movieData, isMovieAdded, dispatch]);
 
   if (movieDataLoading) {
-    return <div>loading...</div>;
+    return (
+      <div className="h-72 w-full animate-pulse rounded-md bg-card-background" />
+    );
   }
-  const imagePath = getImagePath(movieData.backdrop_path);
 
-  function handlerMovieCard(e) {
+  if (!movieData) return null;
+
+  const imagePath = getImagePath(movieData.backdrop_path || movieData.poster_path);
+
+  function handleMovieCard() {
     router.push(`/moviedetails/${movieId}`);
   }
-  async function handlerDelete(e) {
+
+  async function handleDelete(e) {
+    e.stopPropagation();
     await deleteMovie({ movieId, watchlistId });
     dispatch(deleteMovieRx(movieData));
   }
+
   return (
     <>
-      <div className="relative flex cursor-pointer flex-col rounded-md bg-card-background transition duration-300 ease-in-out hover:-translate-y-1 hover:bg-[#9a9a9a]">
+      <div className="group relative flex h-full flex-col overflow-hidden rounded-md bg-card-background shadow-md transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
         {isOverlayVisible && (
-          <div className="absolute z-10 h-full w-full bg-[rgba(0,0,0,0.7)]"></div>
+          <div className="absolute inset-0 z-10 bg-black/70 backdrop-blur-xs" />
         )}
+
         {type === "showWatchlist" && (
-          <div className="absolute flex w-full items-center justify-between p-1">
-            <CircleX
-              onClick={handlerDelete}
-              className="z-10 cursor-pointer rounded-full bg-black text-red-500 transition duration-200 hover:text-red-900"
-            />
-            <Check
-              onClick={() => setOverlayVisible(!isOverlayVisible)}
-              className="z-10 cursor-pointer rounded-full bg-black text-green-500 transition duration-200 hover:text-green-900"
-            />
+          <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between p-2">
+            <button
+              onClick={handleDelete}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-black/80 text-red-500 transition hover:bg-black hover:text-red-400"
+              aria-label="Remove movie from watchlist"
+            >
+              <CircleX size={20} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOverlayVisible(!isOverlayVisible);
+              }}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-black/80 text-green-500 transition hover:bg-black hover:text-green-400"
+              aria-label="Toggle watched status"
+            >
+              <Check size={20} />
+            </button>
           </div>
         )}
 
-        <div className="relative w-full">
-          <Image
-            src={`${imagePath}`}
-            alt=""
-            width={300}
-            height={400}
-            className="w-full rounded-t-md"
-            onClick={handlerMovieCard}
-          />
-        </div>
         <div
-          className="flex h-full flex-col gap-2.5 p-4"
-          onClick={handlerMovieCard}
+          className="relative aspect-[16/10] w-full cursor-pointer overflow-hidden bg-score-background"
+          onClick={handleMovieCard}
         >
-          <ul className="flex flex-col gap-2.5">
-            <li className="moviecard-info-li">
-              <span className="ml-0.5 font-bold">Title:</span>
-              <span className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900">
+          {imagePath ? (
+            <Image
+              src={imagePath}
+              alt={movieData.title || "Movie thumbnail"}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-xs text-secondary-text">
+              No image available
+            </div>
+          )}
+        </div>
+
+        <div
+          className="flex flex-1 cursor-pointer flex-col gap-2 p-3 sm:p-4"
+          onClick={handleMovieCard}
+        >
+          <ul className="flex flex-col gap-1.5 text-xs sm:text-sm">
+            <li className="line-clamp-1">
+              <span className="font-bold text-primary-text">Title: </span>
+              <span className="text-[#fab2b2] transition duration-150 group-hover:text-accent-color-900">
                 {movieData.title}
               </span>
-            </li>{" "}
-            <li className="ml-0.5">
-              <span className="ml-0.5 font-bold">Genre:</span>{" "}
-              {movieData.genres.map((genre, index) => (
-                <span
-                  className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900"
-                  key={index}
-                >
-                  {" "}
-                  {genre.name}
-                  {index !== movieData.genres.length - 1 ? ", " : ""}
-                </span>
-              ))}
             </li>
-            <li className="moviecard-info-li">
-              <span className="ml-0.5 font-bold">Director:</span>{" "}
-              <span className="cursor-pointer text-[#fab2b2] transition duration-150 hover:text-accent-color-900">
+            <li className="line-clamp-1">
+              <span className="font-bold text-primary-text">Genre: </span>
+              <span className="text-[#fab2b2]">
+                {movieData.genres && movieData.genres.length > 0
+                  ? movieData.genres.map((g) => g.name).join(", ")
+                  : "N/A"}
+              </span>
+            </li>
+            <li className="line-clamp-1">
+              <span className="font-bold text-primary-text">Director: </span>
+              <span className="text-[#fab2b2]">
                 {directorname || "No Data"}
               </span>
             </li>
           </ul>
-          <div className="mt-auto flex items-center justify-end gap-2">
-            <p className="text-[#fab2b2]">
-              {movieData.vote_average.toFixed(1)}/10
+
+          <div className="mt-auto flex items-center justify-end gap-1.5 pt-2">
+            <p className="text-xs sm:text-sm font-semibold text-[#fab2b2]">
+              {movieData.vote_average ? movieData.vote_average.toFixed(1) : "N/A"}/10
             </p>
-            <FaImdb className="text-2xl text-yellow-500" />
+            <FaImdb className="text-xl sm:text-2xl text-yellow-500" />
           </div>
         </div>
+
         {type !== "showWatchlist" && (
           <button
-            className="btn mt-auto rounded-none rounded-b-sm px-2.5"
-            onClick={() => setIsModalOpen(true)}
+            className="btn mt-auto rounded-none rounded-b-md px-2.5 py-2 text-xs sm:text-sm font-semibold"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(true);
+            }}
           >
             Add to Watchlist
           </button>
         )}
       </div>
+
       {isModalOpen && (
         <AddMovieModal
           movieId={movieData.id}
